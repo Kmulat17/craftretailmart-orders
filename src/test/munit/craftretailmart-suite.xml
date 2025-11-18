@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="craftretailmart-suite.xml" />
+	<munit:test name="craftretailmartFlow-test" doc:id="e6bcb1e5-b799-4464-9e5e-da02e2d82cbf" ignore="true">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Select" doc:id="2318ad2b-aa72-42ac-92d9-7e7dad4fc81c" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="baa20f8e-6566-43b0-a89d-8d481f16c46a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://craftretailmartFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Input" doc:id="719b87dc-8a1f-4370-91ee-a41a792160ef">
+				<munit:payload value="#[readUrl('classpath://craftretailmartFlowtest\set-event_payload.dwl')]" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to craftretailmartFlow" doc:id="bb8d1c5a-6365-421b-8aff-72ff2e55fc7f" name="craftretailmartFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="cba1a9ac-1d40-47e0-8e9e-04029c5158dd" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import craftretailmartFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Set Variable" doc:id="045e6cda-9c92-4fa9-b9c4-33b693b27f9b" processor="set-variable" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a216a429-d921-40ce-9b6a-fc47c1cfc72e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\orders:application\json:craftretailmart-config-test" doc:id="261f65df-bf43-450a-a995-76809f4048f0">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock Insert" doc:id="d899fd4c-4ca8-4a46-a863-b8ec006ae7a9" processor="db:insert">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="bd317c17-92eb-4359-8e64-8804cd45c442" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables>
+						<munit-tools:variable key="outboundHeadersMapName" value="#[readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="dbpayload" value="#[output application/java --- readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="Set Input" doc:id="37c9f332-c9e5-44e7-a455-9088ed053972">
+				<munit:payload value="#[output application/json --- readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables>
+					<munit:variable key="outboundHeadersMapName" value="#[readUrl('classpath://postordersapplicationjsoncraftretailmartconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\orders:application\json:craftretailmart-config" doc:id="aac5eced-b651-4bcb-8240-5577cbe67424" name="post:\orders:application\json:craftretailmart-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert payload" doc:id="560db03f-b8b0-4dd8-ab77-fbab0d4ba0e9" message="The payload does not match">
+				<munit-tools:that><![CDATA[#[%dw 2.0
+import postordersapplicationjsoncraftretailmartconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Store New ID" doc:id="c76cdec7-453f-4d60-9392-1707d349c7cf" processor="set-variable" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="fb354c43-d442-4637-ab09-0764218b40d0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Logger" doc:id="8e55bf37-e2f8-47d9-9087-6f1e01ec7908" processor="logger" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="a97d2188-8fc0-4b1b-910a-4204a6611034" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="f23556cb-6645-4ae7-9345-bbc24ade07c7" processor="ee:transform" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="5b28ffd1-54cb-47a0-bc91-5232802e7692" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
