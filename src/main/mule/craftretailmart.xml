@@ -128,7 +128,8 @@ output application/json
 			<db:sql ><![CDATA[SELECT * FROM craftretailmart.orders where id = :id]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{id: vars.id}]]]></db:input-parameters>
 		</db:select>
-        <ee:transform doc:name="Transform Message">
+        <logger level="INFO" doc:name="Logger" doc:id="13c1555e-0f1d-43fc-a5ae-ecaa9cea1af3" message="This is test logger"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
